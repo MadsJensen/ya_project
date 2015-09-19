@@ -2,6 +2,7 @@ from __future__ import print_function
 """
 @author: cjb
 """
+
 CLOBBER = False
 FAKE    = False
 VERBOSE = True
@@ -10,7 +11,7 @@ import os, sys
 import errno # should do some error checking...
 import subprocess
 # ENH: install "official" version of stormdb on isis/hyades
-path_to_stormdb = '/users/cjb/src/git/cfin-tools/stormdb'
+path_to_stormdb = '/users/cjb/src/git/cfin-tools/stormdb/stormdb'
 sys.path.append(path_to_stormdb)
 
 # change to stormdb.access (mod. __init__.py)
@@ -39,12 +40,11 @@ for sub in included_subjects:
     mr_study = db.get_studies(sub, modality='MR',unique=True)
     if not mr_study is None:
         # This is a 2D list with [series_name, series_number]
-        series = db.get_series(sub, mr_study, 'MR',verbose=False)
+        series = db.get_series(sub, mr_study[0], 'MR')
     #### Change this to be more elegant: check whether any item in series
     #### matches sequence_name
-        for ser in series:
-            if sequence_name in ser:
-                T1_file_names = db.get_files(sub, mr_study, 'MR',ser[1])
+    T1_file_names = db.get_files(sub, mr_study[0], 'MR',
+                                 series[sequence_name])
 
     input_dicom = T1_file_names[0] # first DICOM file
 
@@ -53,23 +53,16 @@ for sub in included_subjects:
 
     # have to explicitly source bashrc (non-login shell)
     bash_script.append('source ~/.bashrc')
-    bash_script.append('use mne') # set paths
-    bash_script.append('export SUBJECTS_DIR='+subjects_dir)
+#    bash_script.append('use mne') # set paths
+    bash_script.append('export SUBJECTS_DIR=' + subjects_dir)
 
-    bash_script.append('export SUBJECT=' + sub)
+    bash_script.append('export SUBJECT=' + sub[:4])
 
-    bash_script.append('recon-all -s ' + sub + ' -i ' + input_dicom + ' -all')
+    bash_script.append('recon-all -s ' + sub[:4] + ' -i ' + input_dicom +
+                       ' -all')
     # Can do some exit value checking too...
     #bash_script.append('if [[ $? != 0 ]] ; then exit 1; fi')
 
-    # example of how to enter a multi-line bash command
-#    cmd = '''
-#cd ${SUBJECTS_DIR}/${SUBJECT}/bem
-#ln -s watershed/${SUBJECT}_inner_skull_surface ${SUBJECT}-inner_skull.surf
-#ln -s watershed/${SUBJECT}_outer_skin_surface ${SUBJECT}-outer_skin.surf
-#ln -s watershed/${SUBJECT}_outer_skull_surface ${SUBJECT}-outer_skull.surf
-#cd ''' + ad._project_folder
-#    bash_script.append(cmd)
 
     # we could just write each line directly into the script_file
     # instead of first generating the bash_script list
@@ -82,6 +75,6 @@ for sub in included_subjects:
     script_file.close()
 
     # remove the echo " ... " to make this run for real...
-    # qsub_cmd = 'echo "qsub -j y -q long.q ' + script_name + '"'
-    # process = subprocess.Popen([qsub_cmd], shell=True)
-    # process.communicate()
+    qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'
+    process = subprocess.Popen([qsub_cmd], shell=True)
+    process.communicate()
