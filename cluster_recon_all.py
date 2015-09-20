@@ -8,7 +8,7 @@ FAKE = False
 VERBOSE = True
 
 import os, sys
-    import errno  # should do some error checking...
+import errno  # should do some error checking...
 import subprocess
 # ENH: install "official" version of stormdb on isis/hyades
 path_to_stormdb = '/users/cjb/src/git/cfin-tools/stormdb/stormdb'
