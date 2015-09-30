@@ -29,7 +29,7 @@ script_dir = proj_folder+'/scripts/MR_scripts'
 
 included_subjects = db.get_subjects()
 # just test with first one!
-included_subjects = [included_subjects[0]]
+included_subjects = [included_subjects[1]]
 
 for sub in included_subjects:
 
@@ -67,7 +67,8 @@ for sub in included_subjects:
     # instead of first generating the bash_script list
     # but it may be beneficial at some stage to /first/ write all
     # the scripts and only then submit all of them at once
-    script_name = script_dir + '/sub_recon_' + sub + '.sh'
+    os.chdir(script_dir)
+    script_name = 'sub_recon_' + sub + '.sh'
     script_file = open(script_name, 'wt')
     for item in bash_script:
         script_file.write("%s\n" % item)
@@ -76,6 +77,9 @@ for sub in included_subjects:
     process = subprocess.Popen(["chmod u+x " + script_name], shell=True)
     process.communicate()
     # remove the echo " ... " to make this run for real...
-    qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'
-    # process = subprocess.Popen([qsub_cmd], shell=True)
-    # process.communicate()
+#    qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'    
+    qsub_cmd = ["qsub -j y -q long.q ", script_name]
+    process = subprocess.Popen(qsub_cmd, shell=True)
+#    process = subprocess.Popen("qsub", "-j", "y", "-q",
+#                               script_name, shell=True)
+    process.communicate()
