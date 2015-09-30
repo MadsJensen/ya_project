@@ -8,7 +8,7 @@ FAKE = False
 VERBOSE = True
 
 import os, sys
-    import errno  # should do some error checking...
+import errno  # should do some error checking...
 import subprocess
 # ENH: install "official" version of stormdb on isis/hyades
 path_to_stormdb = '/users/cjb/src/git/cfin-tools/stormdb/stormdb'
@@ -25,16 +25,16 @@ scratch_folder = os.path.join(proj_folder, 'scratch')
 
 recon_all_bin = '/opt/local/freesurfer-releases/5.3.0/bin/recon-all'
 subjects_dir = os.path.join(scratch_folder, 'fs_subjects_dir')
-script_dir = proj_folder+'/scripts/MR_scripts/'
+script_dir = proj_folder+'/scripts/MR_scripts'
 
 included_subjects = db.get_subjects()
 # just test with first one!
-included_subjects = [included_subjects[0]]
+included_subjects = [included_subjects[1]]
 
 for sub in included_subjects:
 
     # this is an example of getting the DICOM files as a list
-    sequence_name = 't1_mp2rage_sag_p2_iso_UNI_Images_ND'
+    sequence_name = 't1_mp2rage_sag_p2_iso_UNI_Images'
     mr_study = db.get_studies(sub, modality='MR', unique=True)
     if mr_study is not None:
         # This is a 2D list with [series_name, series_number]
@@ -50,7 +50,7 @@ for sub in included_subjects:
     bash_script.append('#$ -S /bin/bash')  # for qsub
 
     # have to explicitly source bashrc (non-login shell)
-    # bash_script.append('source ~/.bashrc')
+    bash_script.append('source ~/.bashrc')
     bash_script.append("export FREESURFER_HOME=/usr/local/freesurfer")
     bash_script.append("source $FREESURFER_HOME/SetUpFreeSurfer.sh")
     # bash_script.append('use mne') # set paths
@@ -67,7 +67,8 @@ for sub in included_subjects:
     # instead of first generating the bash_script list
     # but it may be beneficial at some stage to /first/ write all
     # the scripts and only then submit all of them at once
-    script_name = script_dir + 'sub_recon_' + sub + '.sh'
+    os.chdir(script_dir)
+    script_name = 'sub_recon_' + sub + '.sh'
     script_file = open(script_name, 'wt')
     for item in bash_script:
         script_file.write("%s\n" % item)
@@ -76,6 +77,9 @@ for sub in included_subjects:
     process = subprocess.Popen(["chmod u+x " + script_name], shell=True)
     process.communicate()
     # remove the echo " ... " to make this run for real...
-    qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'
-    process = subprocess.Popen([qsub_cmd], shell=True)
+#    qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'    
+    qsub_cmd = ["qsub -j y -q long.q ", script_name]
+    process = subprocess.Popen(qsub_cmd, shell=True)
+#    process = subprocess.Popen("qsub", "-j", "y", "-q",
+#                               script_name, shell=True)
     process.communicate()
