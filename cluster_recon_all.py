@@ -29,12 +29,12 @@ script_dir = proj_folder+'/scripts/MR_scripts'
 
 included_subjects = db.get_subjects()
 # just test with first one!
-included_subjects = [included_subjects[1]]
+# included_subjects = [included_subjects[1]]
 
 for sub in included_subjects:
 
     # this is an example of getting the DICOM files as a list
-    sequence_name = 't1_mp2rage_sag_p2_iso_UNI_Images'
+    sequence_name = 't1_mp2rage_sag_p2_iso_UNI_Images_ND'
     mr_study = db.get_studies(sub, modality='MR', unique=True)
     if mr_study is not None:
         # This is a 2D list with [series_name, series_number]
@@ -56,10 +56,10 @@ for sub in included_subjects:
     # bash_script.append('use mne') # set paths
     bash_script.append('export SUBJECTS_DIR=' + subjects_dir)
 
-    bash_script.append('export SUBJECT=' + sub[:4])
+    # bash_script.append('export SUBJECT=' + sub[:4])
 
-    bash_script.append('recon-all -s ' + sub[:4] + ' -i ' + input_dicom +
-                       ' -all')
+    bash_script.append('recon-all -s ' + sub[:4] + "_ND" + ' -i '
+                        + input_dicom + ' -all')
     # Can do some exit value checking too...
     # bash_script.append('if [[ $? != 0 ]] ; then exit 1; fi')
 
@@ -74,12 +74,10 @@ for sub in included_subjects:
         script_file.write("%s\n" % item)
     script_file.close()
 
-    process = subprocess.Popen(["chmod u+x " + script_name], shell=True)
-    process.communicate()
-    # remove the echo " ... " to make this run for real...
-#    qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'    
-    qsub_cmd = ["qsub -j y -q long.q ", script_name]
-    process = subprocess.Popen(qsub_cmd, shell=True)
-#    process = subprocess.Popen("qsub", "-j", "y", "-q",
-#                               script_name, shell=True)
-    process.communicate()
+#     process = subprocess.Popen(["chmod u+x " + script_name], shell=True)
+#     process.communicate()
+#      # remove the echo " ... " to make this run for real...
+#     qsub_cmd = '"qsub -j y -q long.q ' + script_name + '"'
+# #    qsub_cmd = ["qsub -j y -q long.q ", script_name]
+#     process = subprocess.Popen([qsub_cmd], shell=True)
+#     process.communicate()
