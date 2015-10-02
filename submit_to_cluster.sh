@@ -1,10 +1,8 @@
 
-scripts_dir = /projects/MINDLAB2015_MR-YoungAddiction/scripts/MR_scripts
-cd $scripts_dir
-files = *.sh
 
-for file in files
+for file in *.sh
 do
-    # qsub -j y -q long.q $file
-    print $file
+    echo "submitting $file"
+    qsub -j y -q long.q $file
+    mv $file $file.submitted
 done
