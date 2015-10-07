@@ -64,11 +64,11 @@ for sub in included_subjects:
 
             # bash_script.append('export SUBJECT=' + sub[:4])
 
-            bash_script.append('dt_recon -s ' + sub[:4] + "_stripped" +
-                               ' -i ' + input_dicom + " " + '-b ' +
+            bash_script.append('dt_recon --s ' + sub[:4] + "_stripped" +
+                               ' --i ' + input_dicom + " " + '--b ' +
                                bval_dir + sub[:4] +
                                "_bvals" + " " + bval_dir + sub[:4] +
-                               "_bvecs" + " " + "-o " + output_dir +
+                               "_bvecs" + " " + "--o " + output_dir +
                                sub[:4] + "_stripped")
             # Can do some exit value checking too...
             # bash_script.append('if [[ $? != 0 ]] ; then exit 1; fi')
