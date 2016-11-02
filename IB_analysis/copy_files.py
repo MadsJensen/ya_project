@@ -15,20 +15,16 @@ subjects.sort()
 for subject in subjects:
     src = root_dir + subject + "/%s_singleTone1.csv" % subject
     dst = target_dir + "/%s_singleTone1.csv" % subject
-    print(src)
-    print(dst)
+    copyfile(src, dst)
 
     src = root_dir + subject + "/%s_singlePress.csv" % subject
     dst = target_dir + "/%s_singlePress.csv" % subject
-    print(src)
-    print(dst)
+    copyfile(src, dst)
 
     src = root_dir + subject + "/%s_actionTone1.csv" % subject
     dst = target_dir + "/%s_actionTone1.csv" % subject
-    print(src)
-    print(dst)
+    copyfile(src, dst)
 
     src = root_dir + subject + "/%s_actionPress.csv" % subject
     dst = target_dir + "/%s_actionPress.csv" % subject
-    print(src)
-    print(dst)
+    copyfile(src, dst)
