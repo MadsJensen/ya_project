@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# ignore dirs
+IB_analysis/data/
