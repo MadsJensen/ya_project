@@ -2,17 +2,18 @@ import pandas as pd
 import os
 import glob
 
-data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch" +\
+data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch/" +\
             "MJ/IB_analysis/data"
 # data_path = "/Users/au194693/projects/ya_project/IB_analysis/data"
 
 os.chdir(data_path)
 
-condtions = ["singlePress", "actionPress1", "actionTone1", "singleTone1"]
+condtions = ["singlePress", "actionPress", "actionTone1", "singleTone1"]
 
 file_list = glob.glob("subje*")
 
 subjects = list(set([f[8:11] for f in file_list]))
+subjects.sort()
 
 for subject in subjects:
     subject_data = pd.DataFrame()
