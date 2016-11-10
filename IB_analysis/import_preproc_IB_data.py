@@ -12,6 +12,7 @@ condtions = ["singlePress", "actionPress", "actionTone1", "singleTone1"]
 
 file_list = glob.glob("subje*")
 
+# extracts sub id and make a list
 subjects = list(set([f[8:11] for f in file_list]))
 subjects.sort()
 
@@ -56,5 +57,5 @@ for subject in subjects:
                 data["ansAngle"] - data["toneAngle"]) * 2560 / 360
 
         subject_data = subject_data.append(data, ignore_index=True)
-    
+
     all_data = all_data.append(subject_data, ignore_index=True)
