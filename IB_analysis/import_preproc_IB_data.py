@@ -2,13 +2,17 @@ import pandas as pd
 import os
 import glob
 
-data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch/" +\
-            "MJ/IB_analysis/data"
-# data_path = "/Users/au194693/projects/ya_project/IB_analysis/data"
+#data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch/" +\
+#           "MJ/IB_analysis/data"
+data_path = "/Users/au194693/projects/ya_project/IB_analysis/data"
 
 os.chdir(data_path)
 
-condtions = ["singlePress", "actionPress", "actionTone1", "singleTone1"]
+id = pd.read_excel("id_gruppe.xlsx")
+id = id[:109]
+id.columns = ["id", "group"]
+
+condtions = ["singlePress", "actionPress1", "actionTone1", "singleTone1"]
 
 file_list = glob.glob("subje*")
 
@@ -56,6 +60,10 @@ for subject in subjects:
             data["error_time"] = (
                 data["ansAngle"] - data["toneAngle"]) * 2560 / 360
 
+        # TODO: add group number to subject
+
         subject_data = subject_data.append(data, ignore_index=True)
+        subject_data["group"] = (
+            id.loc[id["id"] == int(subject)].group.get_values()[0])
 
     all_data = all_data.append(subject_data, ignore_index=True)
