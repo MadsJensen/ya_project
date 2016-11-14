@@ -3,9 +3,9 @@ import os
 import glob
 import numpy as np
 
-#data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch/" +\
-#           "MJ/IB_analysis/data"
-data_path = "/Users/au194693/projects/ya_project/IB_analysis/data"
+data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch/" +\
+            "MJ/IB_analysis/data"
+#data_path = "/Users/au194693/projects/ya_project/IB_analysis/data"
 
 os.chdir(data_path)
 
@@ -13,7 +13,7 @@ id = pd.read_excel("id_gruppe.xlsx")
 id = id[:109]
 id.columns = ["id", "group"]
 
-condtions = ["singlePress", "actionPress1", "actionTone1", "singleTone1"]
+condtions = ["singlePress", "actionPress", "actionTone1", "singleTone1"]
 
 file_list = glob.glob("subje*")
 
@@ -21,12 +21,16 @@ file_list = glob.glob("subje*")
 subjects = list(set([f[8:11] for f in file_list]))
 subjects.sort()
 
+
+subjects_sorted = list(set(list(id.id.get_values())).intersection(
+                      set(np.asarray([int(x) for x in subjects]))))
+
 all_data = pd.DataFrame()
 
-for subject in subjects:
+for subject in subjects_sorted:
     subject_data = pd.DataFrame()
     for condition in condtions:
-        data_file = "subject_%s_%s.csv" % (subject, condition)
+        data_file = "subject_%s_%s.csv" % (str(subject).zfill(3), condition)
         data = pd.read_csv(data_file, delimiter=";")
 
         if (condition == "singlePress") | (condition == "actionPress"):
