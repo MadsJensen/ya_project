@@ -21,9 +21,9 @@ file_list = glob.glob("subje*")
 subjects = list(set([f[8:11] for f in file_list]))
 subjects.sort()
 
-
-subjects_sorted = list(set(list(id.id.get_values())).intersection(
-                      set(np.asarray([int(x) for x in subjects]))))
+subjects_sorted = list(
+    set(list(id.id.get_values())).intersection(
+        set(np.asarray([int(x) for x in subjects]))))
 
 all_data = pd.DataFrame()
 
@@ -73,7 +73,6 @@ for subject in subjects_sorted:
 
     all_data = all_data.append(subject_data, ignore_index=True)
 
-
 for index, row in all_data.iterrows():
     if np.abs(row.error_time) > 500:
         all_data.error_time.ix[index] = np.NaN
@@ -82,8 +81,8 @@ all_clean = all_data[pd.notnull(all_data['error_time'])]
 
 all_mean = all_clean.groupby(by=["id", "condition",
                                  "group"])["error_time"].mean().reset_index()
-all_wide = all_mean.pivot(index="id", columns="condition",
-                          values="error_time").reset_index()
+all_wide = all_mean.pivot(
+    index="id", columns="condition", values="error_time").reset_index()
 
 all_wide["action_shit"] = all_wide["singlePress"] - all_wide["actionPress1"]
 all_wide["tone_shit"] = all_wide["singleTone1"] - all_wide["actionTone1"]
@@ -92,9 +91,7 @@ for index, row in all_wide.iterrows():
     all_wide["group"].ix[index] = (
         id.loc[id["id"] == int(row.id)].group.get_values()[0])
 
-
 all_wide["group"] = 0
 for sub in subjects_sorted:
     grp = (id[id["id"] == int(sub)].group.get_values())[0]
     all_wide.loc[all_wide["id"] == int(sub), ["group"]] = grp
-    
