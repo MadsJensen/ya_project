@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import glob
+import numpy as np
 
 #data_path = "/projects/MINDLAB2015_MR-YoungAddiction/scratch/" +\
 #           "MJ/IB_analysis/data"
@@ -67,3 +68,23 @@ for subject in subjects:
             id.loc[id["id"] == int(subject)].group.get_values()[0])
 
     all_data = all_data.append(subject_data, ignore_index=True)
+
+
+for index, row in all_data.iterrows():
+    if np.abs(row.error_time) > 500:
+        all_data.error_time.ix[index] = np.NaN
+
+all_clean = all_data[pd.notnull(all_data['error_time'])]
+
+all_mean = all_clean.groupby(by=["id", "condition",
+                                 "group"])["error_time"].mean().reset_index()
+all_wide = all_mean.pivot(index="id", columns="condition",
+                          values="error_time").reset_index()
+
+all_wide["action_shit"] = all_wide["singlePress"] - all_wide["actionPress1"]
+all_wide["tone_shit"] = all_wide["singleTone1"] - all_wide["actionTone1"]
+
+for index, row in all_wide.iterrows():
+    all_wide["group"].ix[index] = (
+        id.loc[id["id"] == int(row.id)].group.get_values()[0])
+
