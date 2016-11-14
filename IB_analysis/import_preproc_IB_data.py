@@ -92,3 +92,9 @@ for index, row in all_wide.iterrows():
     all_wide["group"].ix[index] = (
         id.loc[id["id"] == int(row.id)].group.get_values()[0])
 
+
+all_wide["group"] = 0
+for sub in subjects_sorted:
+    grp = (id[id["id"] == int(sub)].group.get_values())[0]
+    all_wide.loc[all_wide["id"] == int(sub), ["group"]] = grp
+    
